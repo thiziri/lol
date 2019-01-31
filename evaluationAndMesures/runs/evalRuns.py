@@ -1,5 +1,5 @@
 
-# evaluation with trec_eval9
+# evaluation with trec_eval.9.0
 
 from os import listdir 
 from os.path import join, isfile
@@ -8,13 +8,13 @@ import docopt
 from tqdm import tqdm
 
 
-def find_between( s, first, last ):
+def find_between(s, first, last):
     try:
-        start = s.index( first ) + len( first )
+        start = s.index(first) + len(first)
         end = s.index(last, start)
-        return (s[start:end])
+        return s[start:end]
     except ValueError:
-        return ("")
+        return ""
 
 
 if __name__ == "__main__":

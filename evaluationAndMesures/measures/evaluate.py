@@ -5,6 +5,8 @@ import collections
 from measures import Measures
 from tqdm import tqdm
 from os.path import isfile
+from collections import defaultdict
+from numpy import average as avg
 
 
 def get_qrels(qrels_file):
@@ -30,19 +32,20 @@ if __name__ == "__main__":
     # print("\n------Begin------\n")
     args = docopt.docopt("""
         Usage:
-            evalRuns.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>]
+            evalRuns.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>] --check=<indice>
 
         Options:
-            --r=<runs_folder>    Give the folder of runs to be evaluated.
+            --r=<run_file>    Give the run to be evaluated.
             --m=<measures_list>    Give the list of desired measures separated with comma.
             --rj=<qrels>    The TREC like relevance judgements.
+            --check=<indice>    String to check in file name.
         """)
 
     # print(args)
     qrels = get_qrels(args["--rj"]) if bool(args["--rj"]) else {}
     # print(qrels)
 
-    if isfile(args["--r"]):
+    if isfile(args["--r"]) and args["--check"] in args["--r"]:
         Q = {}
         with open(args["--r"], 'r') as f:
             for l in f:
@@ -72,6 +75,7 @@ if __name__ == "__main__":
         if bool(args["--m"]):
             eval_measures = args["--m"].split(',')
         k = [1, 3, 5, 10, 20]
+        measures_all = defaultdict(list)
         for q in Q:
             # print("Question: ", q)
             res = {}  # {m: {} for m in eval_measures}
@@ -81,6 +85,7 @@ if __name__ == "__main__":
                     val = round(measure_f(Q[q]['y_true'], Q[q]['y_pred']), 4)
                     res[measure] = val
                     print('{m}\t{q}\t{v}'.format(m=measure, q=q, v=val))
+                    measures_all[measure].append(val)
                 if measure in at_k:
                     measure_f = dispatcher[measure]
                     # del(res[measure])
@@ -90,8 +95,11 @@ if __name__ == "__main__":
                         val = round(measure_f_at_K(Q[q]['y_true'], Q[q]['y_pred']), 4)
                         res[measure+'@%d' % (k[i])] = val
                         print('{m}\t{q}\t{v}'.format(m=measure+'@%d' % (k[i]), q=q, v=val))
+                        measures_all[measure+'@%d' % (k[i])].append(val)
             # print(q, res)
-            # break
+        for measure in measures_all:
+            print('{m}\tall\t{v}'.format(m=measure, v=round(avg(measures_all[measure]), 4)))
+        # break
 
     # print("Evaluation finished.")
 

@@ -22,6 +22,8 @@ if __name__ == "__main__":
         print("res= "+res)
         out = args["<outputfolder>"]+res
         print(out)
+        if not os.path.exists(args["<outputfolder>"]):
+            os.mkdir(args["<outputfolder>"])
         results=open(out, "w")
         lines = runf.readlines()
         for l in lines :
