@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # print("\n------Begin------\n")
     args = docopt.docopt("""
         Usage:
-            evalRuns.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>] --check=<indice>
+            evaluate.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>] --check=<indice>
 
         Options:
             --r=<run_file>    Give the run to be evaluated.
