@@ -57,7 +57,7 @@ if __name__ == "__main__":
               reconstruct_trec_doc_ids.py --r=<run_file_or_folder> --o=<output_directory>  [--n=<name>] [--tocheck=<clue>]
 
            Example:
-              aggregate_passages.py --r=passages --o=path/to/output --n=documents.run 
+              reconstruct_trec_doc_ids.py --r=passages --o=path/to/output --n=documents.run 
 
            Options:
               --r=<passages_run_file>    TREC run file or folder of files of retrieved passages.
@@ -72,9 +72,9 @@ if __name__ == "__main__":
     else:
         print("Reading run files ...")
         for file in os.listdir(args["--r"]):
-            if args["--tocheck"] in file and ".sh" not in file:
+            if args["--tocheck"] in file:
                 print(file)
-                name = file.split('.ranking')[0]  # .split('_')[0]
+                name = file.split('.ranking')[0]  # .split('_p5')[0]
                 reconstruct(os.path.join(args["--r"], file), args["--o"], name)
 
     print("Done.")

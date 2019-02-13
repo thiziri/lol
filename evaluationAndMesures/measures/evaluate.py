@@ -32,13 +32,14 @@ if __name__ == "__main__":
     # print("\n------Begin------\n")
     args = docopt.docopt("""
         Usage:
-            evaluate.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>] --check=<indice>
+            evaluate.py --r=<runs_file> [--m=<measures_list>] [--rj=<qrels>] --check=<indice> --rank=<ranks_interval>
 
         Options:
             --r=<run_file>    Give the run to be evaluated.
             --m=<measures_list>    Give the list of desired measures separated with comma.
             --rj=<qrels>    The TREC like relevance judgements.
             --check=<indice>    String to check in file name.
+            --rank=<ranks_interval>    Give the list of ranks separated with ',' or a range 'n-m'.
         """)
 
     # print(args)
@@ -74,7 +75,10 @@ if __name__ == "__main__":
         }
         if bool(args["--m"]):
             eval_measures = args["--m"].split(',')
-        k = [1, 3, 5, 10, 20]
+        k = [int(token) for token in args["--rank"].split(',')] if ',' in args["--rank"] \
+            else [i for i in range(int(args["--rank"].split('-')[0]),
+                                   int(args["--rank"].split('-')[1]) + 1,
+                                   1)]  # [1, 3, 5, 10, 20]
         measures_all = defaultdict(list)
         for q in Q:
             # print("Question: ", q)
